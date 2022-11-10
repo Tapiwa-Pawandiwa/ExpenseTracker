@@ -89,7 +89,7 @@ function expensesReducer(state, action) {
       const updateableExpenseIndex = state.findIndex(
         (expense) => expense.id === action.payload.id
       );
-      const updateableExpense = state[updateableExpenseindex];
+      const updateableExpense = state[updateableExpenseIndex];
       const updatedItem = { ...updateableExpense, ...action.payload.data };
       updatedExpenses[updateableExpenseIndex] = updatedItem;
       return updateableExpense;

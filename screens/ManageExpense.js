@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TextInput } from "react-native";
 import React from "react";
 import { useLayoutEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,6 +7,7 @@ import { GlobalStyles } from "../constants/styles";
 import Button from "../components/UI/Button";
 import { useContext } from "react";
 import { ExpensesContext } from "../store/expenses-context";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 const ManageExpense = ({ route, navigation }) => {
   //edit or add
@@ -49,6 +50,7 @@ const ManageExpense = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <ExpenseForm/>
       <View style={styles.buttons}>
         <Button mode="flat" onPress={cancelHandler} style={styles.buttonStyle}>
           Cancel
