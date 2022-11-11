@@ -17,6 +17,10 @@ const ManageExpense = ({ route, navigation }) => {
   const isEditing = !!editedExpenseId; // the double excalamation mark converts a value into a boolean value
   const expensesCtx = useContext(ExpensesContext);
 
+  const selectedExpense = expensesCtx.expenses.find(
+    (expense) => expense.id === editedExpenseId
+  );
+
   //we can set the options of a screen from within a screen using the navigation prop
   //we shouldnt use setOptions like this if youre setting options - useEffect
   useLayoutEffect(() => {
@@ -32,25 +36,24 @@ const ManageExpense = ({ route, navigation }) => {
   function cancelHandler() {
     navigation.goBack();
   }
-  function confirmHandler() {
+  function confirmHandler(expenseData) {
     //triggerd when confirm happens - call add or update dpendding on mode
     if (isEditing) {
-      expensesCtx.updateExpense(
-        editedExpenseId,{
-        description: "Test",
-        amount: 19.99,
-        date: new Date("2022-11-04"),
-        
-      });
+      expensesCtx.updateExpense(editedExpenseId, expenseData);
     } else {
-      expensesCtx.addExpense();
+      expensesCtx.addExpense(expenseData);
     }
     navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
-      <ExpenseForm submitButtonLabel={isEditing?'Update' : 'Add'} onCancel={cancelHandler}/>
+      <ExpenseForm
+        submitButtonLabel={isEditing ? "Update" : "Add"}
+        onCancel={cancelHandler}
+        onSubmit={confirmHandler}
+        defaultValues={selectedExpense}
+      />
       <View style={styles.deleteContainer}>
         {isEditing && (
           <IconButton
