@@ -50,15 +50,7 @@ const ManageExpense = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ExpenseForm/>
-      <View style={styles.buttons}>
-        <Button mode="flat" onPress={cancelHandler} style={styles.buttonStyle}>
-          Cancel
-        </Button>
-        <Button style={styles.buttonStyle} onPress={confirmHandler}>
-          {isEditing ? "Update" : "Add"}
-        </Button>
-      </View>
+      <ExpenseForm submitButtonLabel={isEditing?'Update' : 'Add'} onCancel={cancelHandler}/>
       <View style={styles.deleteContainer}>
         {isEditing && (
           <IconButton
@@ -87,14 +79,5 @@ const styles = StyleSheet.create({
     flex: 1, //take up all space
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonStyle: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
 });
