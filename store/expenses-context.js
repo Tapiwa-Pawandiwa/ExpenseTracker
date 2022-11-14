@@ -84,14 +84,15 @@ function expensesReducer(state, action) {
     //in front of existing items i could add a new object for a new expense
     case "ADD":
       const id = new Date().toString() + Math.random().toString();
-      return [{ ...action.payload }, ...state];
+      return [{ ...action.payload ,id:id}, ...state];
     case "UPDATE":
       const updateableExpenseIndex = state.findIndex(
         (expense) => expense.id === action.payload.id
       );
       const updateableExpense = state[updateableExpenseIndex];
       const updatedItem = { ...updateableExpense, ...action.payload.data };
-      updatedExpenses[updateableExpenseIndex] = updatedItem;
+       const updatedExpenses= [...state];
+       updatedExpenses[updateableExpenseIndex]=updatedItem;
       return updateableExpense;
     case "DELETE":
       return state.filter((expense) => expense.id !== action.payload);

@@ -13,11 +13,11 @@ const RecentExpenses = () => {
     //i want to find out all the expenses in the last 7 days
     const date7daysago = getDateMinusDays(today,7);
     
-    return (expense.date > date7daysago) && (expense.date<=today);
+    return (expense.date >= date7daysago) && (expense.date<=today);
 
   })
   return (
-      <ExpenseOutput expenses={recentExpense}expensesPeriod="Last 7 days" fallbackText="No expenses in last 7 days"/>
+      <ExpenseOutput expenses={recentExpense} expensesPeriod="Last 7 days" fallbackText="No expenses in last 7 days"/>
 
   );
 }

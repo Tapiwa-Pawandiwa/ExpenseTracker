@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
-const ManageExpense = ({ route, navigation }) => {
+function ManageExpense ({ route, navigation }) {
   //edit or add
   //we need to cast to this screen the id of the expense
   //we have an expenseID / if theres no expense Id we are adding not editing
@@ -38,6 +38,7 @@ const ManageExpense = ({ route, navigation }) => {
   }
   function confirmHandler(expenseData) {
     //triggerd when confirm happens - call add or update dpendding on mode
+    
     if (isEditing) {
       expensesCtx.updateExpense(editedExpenseId, expenseData);
     } else {
@@ -45,6 +46,7 @@ const ManageExpense = ({ route, navigation }) => {
     }
     navigation.goBack();
   }
+  
 
   return (
     <View style={styles.container}>
@@ -53,17 +55,17 @@ const ManageExpense = ({ route, navigation }) => {
         onCancel={cancelHandler}
         onSubmit={confirmHandler}
         defaultValues={selectedExpense}
-      />
+      
+      /> 
+       {isEditing && (
       <View style={styles.deleteContainer}>
-        {isEditing && (
           <IconButton
             iconName="trash"
             color={GlobalStyles.colors.error500}
             size={36}
             onPress={deleteExpenseHandler}
           />
-        )}
-      </View>
+      </View> )}
     </View>
   );
 };
