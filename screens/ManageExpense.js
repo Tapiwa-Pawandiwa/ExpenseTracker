@@ -1,5 +1,5 @@
 import { View, StyleSheet, TextInput } from "react-native";
-import React from "react";
+import { useState } from "react";
 import { useLayoutEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import IconButton from "../components/UI/IconButton";
@@ -9,11 +9,16 @@ import { useContext } from "react";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { deleteExpense, storeExpense, updateExpense } from "../util/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
-function ManageExpense ({ route, navigation }) {
+function ManageExpense({ route, navigation }) {
   //edit or add
   //we need to cast to this screen the id of the expense
   //we have an expenseID / if theres no expense Id we are adding not editing
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  //error State
+  const [error, setError] = useState();
   const editedExpenseId = route.params?.expenseId; // the qeustion mark checks if params is an object or if its defined . if its defined we go into expenseId
   const isEditing = !!editedExpenseId; // the double excalamation mark converts a value into a boolean value
   const expensesCtx = useContext(ExpensesContext);
@@ -31,29 +36,48 @@ function ManageExpense ({ route, navigation }) {
   }, [navigation, isEditing]);
 
   async function deleteExpenseHandler() {
-    await deleteExpense(editedExpenseId)
-    expensesCtx.deleteExpense(editedExpenseId);
-    navigation.goBack();
+    setIsSubmitting(true);
+    try {
+      await deleteExpense(editedExpenseId);
+      expensesCtx.deleteExpense(editedExpenseId);
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not delete expense - please try again later");
+      setIsSubmitting(false);
+    }
   }
+
   function cancelHandler() {
     navigation.goBack();
   }
- async function confirmHandler(expenseData) {
+
+  async function confirmHandler(expenseData) {
     //triggerd when confirm happens - call add or update dpendding on mode
-    
-    if (isEditing) {
-      expensesCtx.updateExpense(editedExpenseId, expenseData);
-      await updateExpense(editedExpenseId,expenseData);
-     
-    } else {
-    const id =  await storeExpense(expenseData)
-      expensesCtx.addExpense({...expenseData,id: id});
-
+    setIsSubmitting(true);
+    try {
+      if (isEditing) {
+        expensesCtx.updateExpense(editedExpenseId, expenseData);
+        await updateExpense(editedExpenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        expensesCtx.addExpense({ ...expenseData, id: id });
+      }
+       navigation.goBack();
+    } catch (error) {
+      setError('Could not save data - please try again');
+      setIsSubmitting(false);
     }
-    navigation.goBack();
+   
   }
-  
-
+  function errorHandler() {
+    setError(null);
+  }
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
+  if (isSubmitting) {
+    return <LoadingOverlay />;
+  }
   return (
     <View style={styles.container}>
       <ExpenseForm
@@ -61,20 +85,20 @@ function ManageExpense ({ route, navigation }) {
         onCancel={cancelHandler}
         onSubmit={confirmHandler}
         defaultValues={selectedExpense}
-      
-      /> 
-       {isEditing && (
-      <View style={styles.deleteContainer}>
+      />
+      {isEditing && (
+        <View style={styles.deleteContainer}>
           <IconButton
             iconName="trash"
             color={GlobalStyles.colors.error500}
             size={36}
             onPress={deleteExpenseHandler}
           />
-      </View> )}
+        </View>
+      )}
     </View>
   );
-};
+}
 
 export default ManageExpense;
 

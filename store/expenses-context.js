@@ -5,7 +5,7 @@ export const ExpensesContext = createContext({
   //define shape of context data
   expenses: [],
   addExpense: ({ description, amount, date }) => {},
-  setExepnses: (expenses)=>{},
+  setExpenses: (expenses)=>{},
   deleteExpense: (id) => {},
   updateExpense: (id, { description, amount, date }) => {},
 });
@@ -15,7 +15,7 @@ function expensesReducer(state, action) {
     //if the add action is dispatched we could return a new state which could be an array - so we make a new array copying the existingstate [ usign spread operater]
     //in front of existing items i could add a new object for a new expense
     case "ADD":
-      return [action.payload.id, ...state];
+      return [action.payload, ...state];
     case "SET":
       const inverted = action.payload.reverse();
       return inverted; //put in proper order
